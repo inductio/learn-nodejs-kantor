@@ -5,28 +5,27 @@ var fs = require('fs');
 function errorHandler(err) {
     console.error(err);
     res.statusCode = 500;
-    res.end('На сервере ошибкэ!');
+    res.end('На сервере ошибка!');
     return;
 }
 
-http.createServer(function(req, res){
+function isPage(filePath) {
+    try {
+        return fs.statSync(filePath).isFile();
+    } catch (err) {
+        return false;
+    }
+}
 
-    var info;
-
-    if (req.url === '/'){
+http.createServer(function (req, res) {
+    var info, HtmlURL;
+    HtmlURL = req.url.slice(1) + ((req.url === '/index.html') ? '' : '.html');
+    if (req.url === '/') {
         fs.readFile('index.html', function (err, info) {
             err ? errorHandler(err) : res.end(info);
         });
-    } else if (req.url === '/about'){
-        fs.readFile('about.html', function (err, info) {
-            err ? errorHandler(err) : res.end(info);
-        });
-    } else if (req.url === '/blog'){
-        fs.readFile('blog.html', function (err, info) {
-            err ? errorHandler(err) : res.end(info);
-        });
-    } else if (req.url === '/contacts'){
-        fs.readFile('contacts.html', function (err, info) {
+    } else if (isPage(HtmlURL)) {
+        fs.readFile(HtmlURL, function (err, info) {
             err ? errorHandler(err) : res.end(info);
         });
     } else {
