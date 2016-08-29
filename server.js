@@ -1,31 +1,73 @@
 var http = require('http');
 var url = require('url');
+var fs = require('fs');
 
-//127.0.0.1:1337/echo?message=Hello
+http.createServer(function(req, res){
+    var info;
 
-var server = new http.Server(function (req, res) {
+    if (req.url === '/'){
 
-    res.writeHead(200, "OK", {
-        "Cache-control": "no-cache",
-        "Content-Type" : "application/json; charset=utf-8"
-    });
+        fs.readFile('index.html', function (err, info) {
+            if(err) {
+                console.error(err);
+                res.statusCode = 500;
+                res.end('На сервере ошибкэ!');
+                return;
+            }
 
-  //  res.setHeader('Cache-control', 'no-cache');
-  //  res.setHeader("Content-Type", "application/json; charset=utf-8");
+            res.end(info);
+        });
+    } else if (req.url === '/about'){
 
-    var urlParsed = url.parse(req.url, true);
-    console.log(urlParsed);
+        fs.readFile('about.html', function (err, info) {
+            if(err) {
+                console.error(err);
+                res.statusCode = 500;
+                res.end('На сервере ошибкэ!');
+                return;
+            }
 
-    if (urlParsed.pathname === '/echo' && urlParsed.query.message) {
+            res.end(info);
+        });
+    } else if (req.url === '/blog'){
 
-        res.end( " Ответ: " + urlParsed.query.message );
+        fs.readFile('blog.html', function (err, info) {
+            if(err) {
+                console.error(err);
+                res.statusCode = 500;
+                res.end('На сервере ошибкэ!');
+                return;
+            }
 
+            res.end(info);
+        });
+    } else if (req.url === '/contacts'){
+
+        fs.readFile('contacts.html', function (err, info) {
+            if(err) {
+                console.error(err);
+                res.statusCode = 500;
+                res.end('На сервере ошибкэ!');
+                return;
+            }
+
+            res.end(info);
+        });
     } else {
 
+        fs.readFile('404.html', function (err, info) {
+            if(err) {
+                console.error(err);
+                res.statusCode = 500;
+                res.end('На сервере ошибкэ!');
+                return;
+            }
+
+            res.end(info);
+        });
+
+
         res.statusCode = 404;
-        res.end( "Page not found / Страница не найдена" );
 
     }
-});
-
-server.listen(1337, '127.0.0.1');
+}).listen(3000, '127.0.0.1');
